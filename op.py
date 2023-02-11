@@ -2,7 +2,7 @@
 # In summary, it’s used to simulate realistic scenarios (stock prices, option prices, probabilities…).
 
 
-
+#author of code: https://www.codearmo.com/blog/pricing-options-monte-carlo-simulation-python
 
 def geo_paths(S, T, r, q, sigma, steps, N):
     """
@@ -40,3 +40,32 @@ plt.plot(paths);
 plt.xlabel("Time Increments")
 plt.ylabel("Stock Price")
 plt.title("Geometric Brownian Motion")
+
+
+
+# euro call option 
+def black_scholes_call(S,K,T,r,q,sigma):
+    """
+    Inputs
+    #S = Current stock Price
+    #K = Strike Price
+    #T = Time to maturity 1 year = 1, 1 months = 1/12
+    #r = risk free interest rate
+    #q = dividend yield
+    # sigma = volatility 
+    
+    Output
+    # call_price = value of the option 
+    """
+    d1 = (np.log(S/K) + (r - q + sigma**2/2)*T) / sigma*np.sqrt(T)
+    d2 = d1 - sigma* np.sqrt(T)
+    
+    call = S * np.exp(-q*T)* norm.cdf(d1) - K * np.exp(-r*T)*norm.cdf(d2)
+    return call
+
+
+
+payoffs = np.maximum(paths[-1]-K, 0)
+option_price = np.mean(payoffs)*np.exp(-r*T) #discounting back to present value
+
+bs_price = black_scholes_call(S,K,T,r,q,sigma)
